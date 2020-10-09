@@ -5,7 +5,7 @@ startState = input("Enter the start state :: ")
 goalState = input("Enter the goal state :: ")
 print()
 
-planner = Planner(verbose=True)
+planner = Planner(verbose=False)
 plan = planner.getPlan(startState=startState, goalState=goalState)
 Log.e(f"Final plane derived ::")
 for p in plan:
