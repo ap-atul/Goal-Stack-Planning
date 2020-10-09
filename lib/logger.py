@@ -46,7 +46,7 @@ class Log:
 			'INFO' : blue color text with tag of [INFO]
 			'WARN' : yellow color text with tag of [WARN]
 		"""
-		print(f"{Log.modes[mode]}[{mode}] {message}")
+        print(f"{Log.modes[mode]}{message}")
 
 	@staticmethod
 	def d(message):

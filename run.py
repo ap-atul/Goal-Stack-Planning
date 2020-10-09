@@ -3,18 +3,10 @@ from lib.planner import Planner
 
 startState = input("Enter the start state :: ")
 goalState = input("Enter the goal state :: ")
+print()
 
-planner = Planner(verbose=False)
+planner = Planner(verbose=True)
 plan = planner.getPlan(startState=startState, goalState=goalState)
-Log.i(f"Final plane derived ::")
+Log.e(f"Final plane derived ::")
 for p in plan:
     Log.i(p)
-
-#
-# on : stack clear
-# ontable: putdown, hold
-# clear: putdown, hold; unstack, on, clear
-# hold: pickup,ontable, ae; unstack on clear
-# ae: putdown hold
-#
-

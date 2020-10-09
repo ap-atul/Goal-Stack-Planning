@@ -105,14 +105,12 @@ class Planner:
         self.__sep = "^"
         self.__verbose = verbose
 
-    def __preconditionsStack(self, x, y):
+    def __preconditionsStack(self, y):
         """
         Precondition to stack two values
 
         Parameters
         ----------
-        x : str
-            block 1
         y : str
             block 2
         """
@@ -165,9 +163,15 @@ class Planner:
             block 1
         y : str
             block 2
+
+        References
+        ----------
+
+        on(X, Y)   -> stack(X, Y)
+
         """
         self.__planningStack.append(''.join([Action.STACK, Action.SPACE, str(x), Action.SPACE, str(y)]))
-        self.__preconditionsStack(x, y)
+        self.__preconditionsStack(y)
 
     def __actionOnTable(self, x):
         """
@@ -177,6 +181,12 @@ class Planner:
         ----------
         x : str
             block 1
+
+        References
+        ----------
+
+        onTable(X) -> putDown(X)
+
         """
         self.__planningStack.append(''.join([Action.PUTDOWN, Action.SPACE, str(x)]))
         self.__preconditionsPutDown(x)
@@ -190,14 +200,13 @@ class Planner:
         ----------
         x : str
             block 1
+
+        References
+        ----------
+
+        clear(X)   -> stack(X, ?Y) | unStack(?Z, X)
+
         """
-        check = ''.join([Predicate.ON_TABLE, Predicate.SPACE, str(x)])
-
-        if check in self.__currentStack:
-            self.__planningStack.append(''.join([Action.PUTDOWN, Action.SPACE, str(x)]))
-            self.__preconditionsPutDown(x)
-            return
-
         check = ''.join([Predicate.ON, Predicate.SPACE])
         temp = list()
 
@@ -220,6 +229,12 @@ class Planner:
         ----------
         x : str
             block 1
+
+        References
+        ----------
+
+        holding(X) -> pickup(X) | unStack(X, ?Z)
+
         """
         check = ''.join([Predicate.ON_TABLE, Predicate.SPACE, str(x)])
 
@@ -247,6 +262,12 @@ class Planner:
     def __actionArmEmpty(self):
         """
         Action taken when arm is empty
+
+        References
+        ----------
+
+        armEmpty() -> putDown(?Z) | stack(?X, ?Y)
+
         """
         Log.d(f"Arm is empty :: {self.__planningStack}")
         exit(1)
@@ -261,7 +282,18 @@ class Planner:
             block 1
         y : str
             block 2
+
+        References
+        --------
+
+        stack(X, Y):
+
+            P: holding(X) && clear(Y)
+            A: on(X, Y) && clear(X) && armEmpty()
+            D: holding(X) && clear(Y)
+
         """
+        # self.__currentStack.remove(''.join([Predicate.HOLDING, Predicate.SPACE, str(x)]))
         self.__currentStack.remove(''.join([Predicate.CLEAR, Predicate.SPACE, str(y)]))
 
         self.__currentStack.append(''.join([Predicate.ON, Predicate.SPACE, str(x), Predicate.SPACE, str(y)]))
@@ -278,10 +310,19 @@ class Planner:
             block 1
         y : str
             block 2
+
+        References
+        ----------
+
+        unStack(X, Y):
+
+            P: on(X, Y) && clear(X) && armEmpty()
+            A: holding(X) && clear(Y)
+            D: on(X, Y) && armEmpty()
+
         """
         self.__currentStack.remove(''.join([Predicate.ON, Predicate.SPACE, str(x), Predicate.SPACE, str(y)]))
-        self.__currentStack.remove(''.join([Predicate.CLEAR, Predicate.SPACE, str(x)]))
-        self.__currentStack.remove(Predicate.ARM_EMPTY)
+        # self.__currentStack.remove(Predicate.ARM_EMPTY)
 
         self.__currentStack.append(''.join([Predicate.HOLDING, Predicate.SPACE, str(x)]))
         self.__currentStack.append(''.join([Predicate.CLEAR, Predicate.SPACE, str(y)]))
@@ -294,6 +335,16 @@ class Planner:
         ----------
         x : str
             block 1
+
+        References
+        ---------
+
+        pickup(X):
+
+            P: onTable(X) && clear(X) && armEmpty()
+            A: holding(X)
+            D: onTable(X) && armEmpty()
+
         """
         self.__currentStack.remove(Predicate.ARM_EMPTY)
         self.__currentStack.remove(''.join([Predicate.ON_TABLE, Predicate.SPACE, str(x)]))
@@ -308,12 +359,21 @@ class Planner:
         ----------
         x : str
             block 1
+
+        References
+        ---------
+
+        putDown(X):
+
+            P: holding(X)
+            A: onTable(X) && armEmpty()
+            D: holding(X)
+
         """
-        # self.__currentStack.remove(''.join([Predicate.HOLDING, Predicate.SPACE, str(x)]))
+        self.__currentStack.remove(''.join([Predicate.HOLDING, Predicate.SPACE, str(x)]))
 
         self.__currentStack.append(Predicate.ARM_EMPTY)
         self.__currentStack.append(''.join([Predicate.ON_TABLE, Predicate.SPACE, str(x)]))
-        self.__currentStack.append(''.join([Predicate.CLEAR, Predicate.SPACE, str(x)]))
 
     def getPlan(self, startState: str, goalState: str):
         """
