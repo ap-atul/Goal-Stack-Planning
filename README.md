@@ -34,7 +34,7 @@ Consider below stacks
 | A |  | C |  | D |     | A |  | D |
 -----  -----  -----     -----  -----
 ___________________     ____________
-	   Start                Goal     
+      Start                Goal     
 
 
 Plan :: 

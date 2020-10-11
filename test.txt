@@ -1,10 +1,10 @@
-on C A^on_table A^on_table B^clear C^clear B^arm_empty
-on A B^on B C^on_table C^clear A^arm_empty
-SAMPLE 2
-
 on B A^on_table A^on_table C^on_table D^clear B^clear C^clear D^arm_empty
 on C A^on B D^on_table A^on_table D^clear C^clear B^arm_empty
 SAMPLE 1
+
+on C A^on_table A^on_table B^clear C^clear B^arm_empty
+on A B^on B C^on_table C^clear A^arm_empty
+SAMPLE 2
 
 on_table A^on_table B^on_table C^on_table D^clear A^clear B^clear C^clear D^arm_empty
 on A B^on B C^on C D^clear A^arm_empty
