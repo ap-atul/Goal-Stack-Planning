@@ -90,7 +90,7 @@ class Planner:
     __plan: list
         final plan
     __sep: str
-        separtor
+        separator
     __verbose: bool
         true to print the planning stack
     """
@@ -408,6 +408,7 @@ class Planner:
             top = self.__planningStack.pop()
             temp = top.split()
 
+            # if it is a predicate in current stack pop it
             if temp[0] in self.__predicates:
                 if top in self.__currentStack:
                     continue
